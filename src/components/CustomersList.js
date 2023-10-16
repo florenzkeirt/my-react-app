@@ -2,6 +2,11 @@ import React, { Component } from "react";
 import Customer from "./Customer";
 
 class CustomerList extends Component {
+    onEdit = data => {
+        //console.log("customer on edit ", id);
+        this.props.onEdit(data);
+    };
+
     render() {
         const customers = this.props.customers;
 
@@ -24,7 +29,13 @@ class CustomerList extends Component {
                     <tbody>
                         {
                             customers.map(customer => {
-                                return <Customer customer={customer} key={customer.id} />;
+                                return (
+                                    <Customer 
+                                        customer={customer} 
+                                        key={customer.id} 
+                                        onEdit={this.onEdit} 
+                                    />
+                                );
                             })
                         }
                     </tbody>

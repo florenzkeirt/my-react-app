@@ -8,19 +8,22 @@ import "./app.css";
 class App extends Component {
     state = {
         customers: [],
+        customer: {},
         loader: false,
-        url: "http://localhost:8000/api/v1/customers"
+        token: "1|bZgl63C4Zjkd70LpautGSX51FLjtkEJwX3ZXyOaY67b77ccb",
+        getUrl: "http://localhost:8000/api/v1/customers",
+        createUrl: "http://localhost:8000/api/v1/customers",
+        editUrl: "http://localhost:8000/api/v1/customers"
     };
     
     getCustomers = async() => {
         this.setState({ loader: true });
-        const token = "1|bZgl63C4Zjkd70LpautGSX51FLjtkEJwX3ZXyOaY67b77ccb";
 
         try {
-            const response = await axios.get(this.state.url, {
+            const response = await axios.get(this.state.getUrl, {
                 headers: {
-                    Authorization: `Bearer ${token}`,
-                },
+                    Authorization: `Bearer ${this.state.token}`,
+                }
             });
             this.setState({ customers: response.data.data, loader: false }); // Used response.data.data because the API result is not entirely JSON
         } catch (error) {
@@ -29,8 +32,68 @@ class App extends Component {
         }
     };
 
+    onEdit = data => {
+        //console.log("app ", data);
+        this.setState({ customer: data });
+    };
+
+    createCustomer = async (data) => {
+        this.setState({ loader: true })
+
+        await axios.post(this.state.createUrl, {
+            // Your JSON data goes here
+            name: data.name,
+            type: data.type,
+            email: data.email,
+            address: data.address,
+            city: data.city,
+            state: data.state,
+            postalCode: data.postalCode
+        }, 
+        {
+            headers: {
+                Authorization: `Bearer ${this.state.token}`,
+            }
+        });
+
+        this.getCustomers();
+    };
+
+    editCustomer = async (data) => {
+        // clear customer obj
+        this.setState({ customer: {}, loader: true });
+
+        await axios.patch(`${this.state.editUrl}/${data.id}`, {
+            // Your JSON data goes here
+            name: data.name,
+            type: data.type,
+            email: data.email,
+            address: data.address,
+            city: data.city,
+            state: data.state,
+            postalCode: data.postalCode
+        }, 
+        {
+            headers: {
+                Authorization: `Bearer ${this.state.token}`,
+            }
+        });
+
+        this.getCustomers();
+    };
+
     componentDidMount() {
         this.getCustomers();
+    };
+
+    onFormSubmit = data => {
+        if (data.isEdit) {
+            // if is edit true
+            this.editCustomer(data);
+        } else {
+            // if edit false
+            this.createCustomer(data);
+        }
     };
 
     render() {
@@ -44,11 +107,14 @@ class App extends Component {
                     </div>
                 </div>
                 <div className="ui main-container">
-                    <CustomerForm />
+                    <CustomerForm customer={this.state.customer} onFormSubmit={this.onFormSubmit} />
                     {
                         this.state.loader ? <Loader /> : ""
                     }
-                    <CustomerList customers = { this.state.customers } />
+                    <CustomerList 
+                        customers = { this.state.customers } 
+                        onEdit = {this.onEdit}
+                    />
                 </div>
             </div>
         )
