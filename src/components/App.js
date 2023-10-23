@@ -11,9 +11,9 @@ class App extends Component {
         customer: {},
         loader: false,
         token: "1|bZgl63C4Zjkd70LpautGSX51FLjtkEJwX3ZXyOaY67b77ccb",
-        getUrl: "http://localhost:8000/api/v1/customers",
-        createUrl: "http://localhost:8000/api/v1/customers",
-        editUrl: "http://localhost:8000/api/v1/customers"
+        getUrl: "http://laravel-api.local/api/v1/customers",
+        createUrl: "http://laravel-api.local/api/v1/customers",
+        editUrl: "http://laravel-api.local/api/v1/customers"
     };
     
     getCustomers = async() => {
