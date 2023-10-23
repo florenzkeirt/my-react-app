@@ -15,6 +15,7 @@ class App extends Component {
         createUrl: "http://laravel-api.local/api/v1/customers",
         editUrl: "http://laravel-api.local/api/v1/customers"
     };
+    // Change API URL
     
     getCustomers = async() => {
         this.setState({ loader: true });
